@@ -1,0 +1,98 @@
+<html>
+
+<head>
+<script>
+    console.log('Aaaaa');
+    
+     //===================================
+    //js->swift 사용자 정보 전달 web->ios
+    function callScheduleView(){
+        console.log('callGetPurchases');
+        callSwiftFunc('set_alarm')
+    }
+    //===================================
+
+    //===================================
+    //js->swift 사용자 정보 전달 web->ios
+    function callSetUserInfo(){
+        var inputName = document.getElementById('name').value
+        console.log('callGetPurchases');
+        var info = {name:inputName,email:'a@a.com',phone:'010-1111-1111',gender:'male'};
+        callSwiftFunc('set_user_info', info);
+    }
+    //===================================
+
+    //===================================
+    //js->swift 사용자 정보 전달 web->ios
+    function download(){
+        
+        var info = {url:'http://m.konglishman.pibs-alio.com/album/my_qna/kong_1602137839.m4a'};
+        callSwiftFunc('download', info);
+    }
+
+    function post1(){
+    	window.webkit.messageHandlers.cancel.postMessage({});
+    }
+
+    function post2(){
+    	window.webkit.messageHandlers.login.postMessage({'id':'t@test.com', 'passwd':'1234'});
+    }
+    //===================================
+
+    //===================================
+    //js->swift web에서 ios에 uuid 요청 => ios 에서 getUUID를 호출하면서 매개변수로 ["uuid":uuid] 를 보내줌 
+    function callGetUUID(){
+        console.log('callGetUUID');
+        callSwiftFunc('get_uuid');
+    }
+    //swift->js
+     function getUUID(data1){
+        var obj = JSON.parse(data1);
+        document.getElementById('name').value = obj["uuid"];
+        // return obj["uuid"]
+    }
+    //===================================
+
+    //===================================
+    //js->swift web에서 ios에 purchase list 요청 => ios 에서 getPurchases를 호출하면서 매개변수로 ["purchases":purchases] 를 보내줌 
+    function callGetPurchases(){
+        console.log('callGetPurchases');
+        callSwiftFunc('get_purchases');
+    }
+    //swift->js
+     function getPurchases(data1){
+        var obj = JSON.parse(data1);
+        return obj["purchases"];
+    }
+    //===================================
+    
+
+    function callSwiftFunc(action_name, data1){
+        console.log('callSwiftFunc')
+        var url = 'kongtal://' + action_name;
+        if (data1) {
+            var jsonString = (JSON.stringify(data1));
+             // var escapedJsonParameters = jsonString;
+            var escapedJsonParameters = escape(jsonString);
+            console.log(escapedJsonParameters)
+            url = url + "#" + escapedJsonParameters;
+
+        }
+        document.location.href = url;
+    }
+
+</script>
+</head>
+
+<body>
+    <button onclick='callGetUUID()'>Get UUID</button>
+    <button onclick='callSetUserInfo()'>Set User Info</button><br>
+    <button onclick='callScheduleView()'>Set Alarm</button><br>
+    <button onclick='download()'>Download</button><br>
+<button onclick='post1()'>PostMessage</button><br>
+
+    <button onclick='post2()'>PostMessage2</button><br>
+
+    <input type='text' name='firstname' id='name' value='uuid'><br>
+</body>
+</html>
